@@ -1,0 +1,77 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: url('fuel.jpeg');
+    background-size: cover;
+}
+
+nav {
+    text-align: right;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav li {
+    display: inline;
+    margin: 0 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+.create-account-container {
+    max-width: 400px;
+    max-height: auto;
+    margin: 70px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.create-account-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.create-account-container form {
+    text-align: left;
+}
+
+.create-account-container label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.create-account-container input,
+.create-account-container select {
+    width: 93%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.create-account-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.create-account-container button:hover {
+    background-color: #0056b3;
+}
