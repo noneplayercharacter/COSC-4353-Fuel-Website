@@ -1,0 +1,78 @@
+/* CSS for body */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: url('fuel.jpeg');
+    background-size: cover;
+}
+
+/* Navbar styles */
+nav {
+    text-align: right;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav li {
+    display: inline;
+    margin: 0 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Quote container styles */
+.quote-container {
+    width: 300px;
+    margin: 70px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.quote-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quote-container form {
+    text-align: left;
+}
+
+.quote-container label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.quote-container input {
+    width: 92%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.quote-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.quote-container button:hover {
+    background-color: #0056b3;
+}
