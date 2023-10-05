@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+/* Global CSS File, any changes effects all pages */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primarybutton: #007BFF;
+  --secondarybutton: #0056b3;
+  --darkgrey: rgba(0, 0, 0, 0.5);
+  --lightgrey: #ccc;
+  --formbackground: rgba(255, 255, 255, 0.6);
+  --white: #f8f8f8;
+}
+
+
+
+a {
+  text-decoration: none;
+  color: var(--white);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: url('assets/fuel.jpeg');
+  background-size: cover;
+  height: 100vh;
+}
+
+
+
+/* Global Container styles */
+
+.container {
+  width: 300px;
+  margin: 70px auto;
+  padding: 20px;
+  background-color: var(--formbackground);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.container form {
+  text-align: left;
+}
+
+.container label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.container button {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--primarybutton);
+  color: var(--white);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.container button:hover {
+  background-color: var(--secondarybutton);
+}
+
+.container input,
+.container select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid var(--lightgrey);
+    border-radius: 5px;
+}
