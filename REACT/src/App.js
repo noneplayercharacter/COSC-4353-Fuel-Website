@@ -7,10 +7,19 @@ import ModifyAccount from "./pages/ModifyAccount/ModifyAccount";
 import CreateAccount from './pages/CreateAccount/CreateAccount';
 import Navbar from "./components/Navbar";
 import { Route, Routes } from 'react-router';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const Qclient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
   return (
     <div className="App">
+      <QueryClientProvider client={Qclient}>
       <Navbar />
         <Routes>
             <Route path="/" element={<Home/>} />
@@ -20,6 +29,7 @@ function App() {
             <Route path="/CreateAccount" element={<CreateAccount/>} />
             <Route path="/login" element={<Login/>} />
         </Routes>
+      </QueryClientProvider>
     </div>
   );
 }
