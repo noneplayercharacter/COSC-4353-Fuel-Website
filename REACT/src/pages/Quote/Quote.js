@@ -9,8 +9,7 @@ function Quote(){
         gallons: 0,
         address: "",
         date: "",
-        price: 0,
-        amount: ""
+        price: 0
       });
     useEffect(() => {
       fetch("/api/Quote")
@@ -20,6 +19,11 @@ function Quote(){
     , []);
 
     const totalAmountDue = data.gallons * data.price;
+
+    const handleGallonsChange = (event) => {
+        const newGallons = parseFloat(event.target.value);
+        setData({ ...data, gallons: newGallons });
+      };
 
     return(
         <div>
@@ -33,7 +37,9 @@ function Quote(){
                     name="gallonsRequested"
                     required
                     min = "5"
-                />
+                    max = "1000"
+                    onChange={handleGallonsChange}
+                 />
                 <label htmlFor="deliveryAddress">Delivery Address:</label>
                 <input
                     type="text"
@@ -41,7 +47,7 @@ function Quote(){
                     name="deliveryAddress"
                     value={data.address}
                     readOnly
-                    
+
                 />
                 <label htmlFor="deliveryDate">Delivery Date:</label>
                 <input
@@ -56,6 +62,7 @@ function Quote(){
                     type="number"
                     id="suggestedPrice"
                     name="suggestedPrice"
+                    value={data.price}
                     readOnly
                 />
                 <label htmlFor="totalAmountDue">Total Amount Due:</label>

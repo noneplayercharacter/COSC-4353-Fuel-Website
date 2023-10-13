@@ -14,10 +14,19 @@ app.get("/api", (req, res) => {
 app.get("/api/Quote", (req, res) => {
     res.json({ gallons: 0,
                address: "8251 bob street",
-               date: "",
-               price: 0,
-               amount: ""});
+               date: "2022-01-01",
+               price: 2.5,
+               total: 0});
 });
+
+app.get("/api/QuoteHistory", (req, res) => {
+    res.json({ gallons: 20,
+               address: "1512 john street",
+               date: "2022-01-01",
+               price: 2.50,
+               total: 50});
+});
+
 
 // Port in-use msg
 app.listen(PORT, ()=>{
