@@ -14,7 +14,7 @@ function Navbar(){
     return(
         <div className='navbar'>
             <div className='logo'>
-                <img src={Logo} alt='logo' />
+                <Link to='/'><img src={Logo} alt='logo' /></Link>
             </div>
             <ul className={click ? 'nav-menu active' : 'nav-menu'}>
                 <Link to='/' className='nav-item' >Home</Link>
