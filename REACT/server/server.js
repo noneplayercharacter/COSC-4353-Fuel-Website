@@ -17,14 +17,6 @@ let userData = {
     state: 'TX',
     zipcode: '98745',
   };
-  function updateUser(data) {
-    if (!data.fullname || data.fullname.length === 0 || data.fullname.length > 50) {
-      return { isValid: false, message: 'Invalid full name' };
-    }
-    userData = { ...userData, ...data };
-  
-    return { isValid: true, data: userData };
-  }
 app.use(bodyParser.json());
 
 app.get("/api", (req, res) => {
