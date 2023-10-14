@@ -7,6 +7,16 @@ const Yup = require('yup'); //Yup validation middleware
 app.use(express.json());
 // Enable CORS for all routes
 app.use(cors());
+let userData = {
+    fullName: 'Ricky Bobby',
+    address1: '123 ShakenBake Dr',
+    address2: 'Apt 456',
+    city: 'Houston',
+    state: 'TX',
+    zipcode: '98745',
+  };
+
+
 
 // GET Directories
 app.get("/api", (req, res) => {
@@ -55,6 +65,20 @@ app.get("/api/QuoteHistory", (req, res) => {
                date: "2022-01-01",
                price: 2.50,
                total: 50});
+});
+
+app.get("/api/modifyAccount", (req, res) => {
+    res.json(userData);
+});
+app.post('/api/modifyAccount', (req, res) => {
+    userData.fullName = req.body.fullName;
+    userData.firstAddress = req.body.firstAddress;
+    userData.secondAddress = req.body.secondAddress;
+    userData.city = req.body.city;
+    userData.state = req.body.state;
+    userData.zipcode = req.body.zipcode;
+
+    res.json({ message: 'User account updated successfully' });
 });
 
 
