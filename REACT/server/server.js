@@ -118,6 +118,43 @@ app.post('/api/validatecreateAcc', (req, res) => {
         }
     })});
 
+
+
+// Get for login.js, Gets data from server(Can be changed to DB)
+app.get("/api/login", (req, res) => {
+    res.json({
+        user: "bobby123",
+        password: "hibobby"
+    });
+});
+
+const loginSchema = Yup.object({
+    user: Yup.string()
+        .required("Username is required"),
+    pass: Yup.string()
+        .required("Password is required")
+});
+
+app.post('/api/validateLogin', (req, res) => {
+    const data = req.body;
+    loginSchema.validate({ user: data.username, pass: data.password }).catch(err => {
+        res.status(400).json({ errors: [err.errors]});
+    }).then(valid => {
+        if (valid) {
+            fetch("http://localhost:5000/api/login")
+            .then((response) => response.json())
+            .then((loginData) => {
+                if ( data.username === loginData.user && data.password === loginData.password)
+                {
+                    res.json({ message: 'Login successful' });
+                } else {
+                    res.json({ message: 'Account Login Failed' });
+                }
+        })}})});
+
+
+
+
 app.get("/api/modifyAccount", (req, res) => {
     res.json(userData);
 });
