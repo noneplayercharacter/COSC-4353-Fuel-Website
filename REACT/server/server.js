@@ -95,6 +95,29 @@ const accountSchema = Yup.object({
         .max(9, "Zip-Code must be at less than 9"),
 });
 
+
+const accSchema = Yup.object({
+    user: Yup.string()
+        .required("User is required")
+        .min(5, "User must be greater than 5 characters")
+        .max(25, "User must be less than 25 characters"),
+    pass: Yup.string()
+        .required("Password is required")
+        .min(7, "Password must be greater than 7 characters")
+        .max(100, "Password must be less than 100 characters"),
+});
+
+app.post('/api/validatecreateAcc', (req, res) => {
+    const data = req.body;
+    accSchema.validate({ user: data.username, pass: data.password }).catch(err => {
+        res.status(400).json({ errors: [err.errors]});
+    }).then(valid => {
+        if (valid) {
+            console.log("Validated")
+            res.json({ message: 'Account Creation successful' });
+        }
+    })});
+
 app.get("/api/modifyAccount", (req, res) => {
     res.json(userData);
 });
