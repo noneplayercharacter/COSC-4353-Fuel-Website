@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import styles from './QuoteHistory.module.css'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 //Function that get's the address of where the data is.
 //Also keeps code organized
+const fetchData = () => {
+    return axios.get("http://localhost:5000/api/QuoteHistory")
+                .then((res) => res.data);
+}
 
 function QuoteHistory(){
-    const [data, setData] = useState({
-        gallons: 0,
-        address: "",
-        date: "",
-        price: 0,
-        total: 0
-      });
-    useEffect(() => {
-      fetch("/api/QuoteHistory")
-      .then((res) => res.json())
-      .then((data) => setData(data))
-      }
-    , []);
+    //Default values for data
+    const info = {
+        date: "No data available",
+        address: "No data available",
+        gallons: "No data available",
+        price: "No data available",
+        total: "No data available",
+      };
+    
+      const { isLoading, data, error, refetch }= useQuery(["data"], fetchData);
+      
+      if (isLoading) return "Loading...";
+      if (error) return "An error has occurred: " + error.message;
 
     return(
         <div>
@@ -35,11 +41,11 @@ function QuoteHistory(){
                     </thead>
                     <tbody>
                         <tr>
-                        <td>{data.date}</td>
-                        <td>{data.address}</td>
-                        <td>{data.gallons}</td>
-                        <td>{data.price}</td>
-                        <td>{data.total}</td>
+                        <td>{data ? data.date: info.date}</td>
+                        <td>{data ? data.address: info.address}</td>
+                        <td>{data ? data.gallons: info.gallons}</td>
+                        <td>{data ? data.price: info.price}</td>
+                        <td>{data ? data.total: info.price}</td>
                         </tr>
                     </tbody>
                     </table>
