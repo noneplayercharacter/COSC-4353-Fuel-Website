@@ -24,6 +24,19 @@ async function createClient(user_name, user_password) {
     };
 }
 
+async function getFuelQuoteHistory(id) {
+    const [rows] = await pool.query("SELECT * from fuel_quote_history WHERE id = ?", [id]);
+    const [client_data] = await pool.query("SELECT * from client_information WHERE id = ?", [id]);
+    
+    return [rows, client_data];
+}
+
+async function getQuote(id) {
+    const [client_data] = await pool.query("SELECT * from client_information WHERE id = ?", [id]);
+    
+    return client_data;
+}
+
 // Perform the createClient operation
 /*(async () => {
     try {
@@ -36,5 +49,7 @@ async function createClient(user_name, user_password) {
 
 module.exports = {
     getClientInfo,
-    createClient
+    createClient,
+    getFuelQuoteHistory,
+    getQuote,
 };

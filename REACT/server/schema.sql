@@ -24,11 +24,11 @@ CREATE TABLE fuel_quote_history (
     id integer NOT NULL,
     gallons_requested FLOAT NOT NULL,
     delivery_date DATE NOT NULL,
-    company_profit_margin FLOAT NOT NULL,
     date_created DATE NOT NULL,
+    suggested_price FLOAT NOT NULL,
+    total FLOAT NOT NULL,
     FOREIGN KEY (id) REFERENCES client_information(id)
 );
-
 
 INSERT INTO user_info (user_name, user_password) VALUES ("123ant", "password"),
 ("user2", "password2");
@@ -37,8 +37,6 @@ INSERT INTO client_information(fullName, address1, address2, city, us_state, zip
 VALUES ("Eric Cartman", "123 Test St", "Apt 34", "South Park", "CO", "84235"),
 ("Anthony Castillo", "123 Sesame St", "Apt 99", "Houston", "TX", "77123");
 
-INSERT INTO fuel_quote_history (id, gallons_requested, delivery_date, company_profit_margin, date_created)
-VALUES (1, 100.5, '2023-10-25', 0.1, '2023-10-25'),
-(2, 200.0, '2023-10-26', 0.2, '2023-10-26');
-
-
+INSERT INTO fuel_quote_history (id, gallons_requested, delivery_date, date_created, suggested_price, total)
+VALUES (1, 100.5, '2023-10-25', '2023-10-25', 1.5, 150.0),
+(2, 200.0, '2023-10-26', '2023-10-26', 2.0, 200.0);

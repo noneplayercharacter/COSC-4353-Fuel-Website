@@ -3,15 +3,18 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors'); //Cors middleware
 const Yup = require('yup'); //Yup validation middleware
-let getClientInfo, createClient;
+let getClientInfo, createClient, getFuelQuoteHistory, getQuote;
 try {
     const databaseFunction = require('./database.js');
     getClientInfo = databaseFunction.getClientInfo;
     createClient = databaseFunction.createClient;
+    getFuelQuoteHistory = databaseFunction.getFuelQuoteHistory;
+    getQuote = databaseFunction.getQuote;
 }
 catch {
     console.error("Error importing functions from database.js");
 }
+
 
 app.use(express.json());
 // Enable CORS for all routes
@@ -46,14 +49,22 @@ app.get("/api", (req, res) => {
 });
 
 // Get for Quote.js, Gets data from server(Can be changed to DB)
-app.get("/api/Quote", (req, res) => {
-    res.json({
-        gallons: 0,
-        address: "8251 bob street",
-        date: "2022-01-01",
-        price: 2.5,
-        total: 0
-    });
+app.get("/api/Quote", async (req, res) => {
+    try{
+        const id = 1;
+        const data = await getQuote(id);
+        res.json({
+            gallons: 0, //default value
+            address: data[0].address1 + " " + data[0].address2, //client's address
+            date: "2022-01-01",
+            price: 2.5, //this needs to change to price from the pricing module
+            total: 0   //default value
+        });
+
+    } catch(error) {
+        res.status(500).json({ error: "An error occurred while fetching data" });
+    }
+
 });
 
 
@@ -82,15 +93,23 @@ app.post('/api/validateQuote', (req, res) => {
 });
 
 
-// Get for QuoteHistory.js, Gets data from server(Can be changed to DB)
-app.get("/api/QuoteHistory", (req, res) => {
-    res.json({
-        gallons: 20,
-        address: "1512 john street",
-        date: "2022-01-01",
-        price: 2.50,
-        total: 50
-    });
+// Get for QuoteHistory.js, Gets data from database
+app.get("/api/QuoteHistory", async (req, res) => {
+    try{
+        const id = 1;
+        const data = await getFuelQuoteHistory(id);
+        res.json({
+            gallons: data[0][0].gallons_requested,
+            address: data[1][0].address1 + " " + data[1][0].address2,
+            date: data[0][0].delivery_date.toString().slice(4, 15),
+            created: data[0][0].date_created.toString().slice(4, 15),
+            price: data[0][0].suggested_price,
+            total: data[0][0].total
+        });
+
+    } catch(error) {
+        res.status(500).json({ error: "An error occurred while fetching data" });
+    }
 });
 
 

@@ -33,6 +33,7 @@ function QuoteHistory(){
                     <thead>
                         <tr>
                         <th>Date</th>
+                        <th>Created</th>
                         <th>Delivery Address</th>
                         <th>Gallons</th>
                         <th>Suggested Price</th>
@@ -42,6 +43,7 @@ function QuoteHistory(){
                     <tbody>
                         <tr>
                         <td>{data ? data.date: info.date}</td>
+                        <td>{data ? data.created: info.created}</td>
                         <td>{data ? data.address: info.address}</td>
                         <td>{data ? data.gallons: info.gallons}</td>
                         <td>{data ? data.price: info.price}</td>
