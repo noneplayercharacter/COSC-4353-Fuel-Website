@@ -3,6 +3,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors'); //Cors middleware
 const Yup = require('yup'); //Yup validation middleware
+let getClientInfo, createClient;
+try {
+    const databaseFunction = require('./database.js');
+    getClientInfo = databaseFunction.getClientInfo;
+    createClient = databaseFunction.createClient;
+}
+catch {
+    console.error("Error importing functions from database.js");
+}
 
 app.use(express.json());
 // Enable CORS for all routes
@@ -16,7 +25,20 @@ let userData = {
     zipcode: '98745',
 };
 
+app.get("/clientinformation", async (req, res) => {
+    try {
+        const client = await getClientInfo();
+        res.send(client);
+    }
+    catch (error) {
+        console.error("error fetching client information", error);
+        res.status(500).send("Internal Server Error");
+    }
 
+    //res.send("testing for database")
+    //res.send(getClientInfo());
+
+})
 
 // GET Directories
 app.get("/api", (req, res) => {
@@ -107,16 +129,23 @@ const accSchema = Yup.object({
         .max(100, "Password must be less than 100 characters"),
 });
 
-app.post('/api/validatecreateAcc', (req, res) => {
+app.post('/api/validatecreateAcc', async (req, res) => {
     const data = req.body;
-    accSchema.validate({ user: data.username, pass: data.password }).catch(err => {
-        res.status(400).json({ errors: [err.errors]});
-    }).then(valid => {
+    try {
+        const valid = await accSchema.validate({ user: data.username, pass: data.password });
         if (valid) {
-            console.log("Validated")
-            res.json({ message: 'Account Creation successful' });
+            const result = await createClient(data.username, data.password);
+            console.log("Validated");
+            res.json({ message: 'Account Creation successful', result });
+        } else {
+            res.status(400).json({ errors: ['Validation failed'] });
         }
-    })});
+    } catch (error) {
+        console.error("Error creating client:", error);
+        res.status(500).json({ message: 'Account Creation failed', error: error.message });
+    }
+});
+
 
 
 
@@ -138,19 +167,21 @@ const loginSchema = Yup.object({
 app.post('/api/validateLogin', (req, res) => {
     const data = req.body;
     loginSchema.validate({ user: data.username, pass: data.password }).catch(err => {
-        res.status(400).json({ errors: [err.errors]});
+        res.status(400).json({ errors: [err.errors] });
     }).then(valid => {
         if (valid) {
             fetch("http://localhost:5000/api/login")
-            .then((response) => response.json())
-            .then((loginData) => {
-                if ( data.username === loginData.user && data.password === loginData.password)
-                {
-                    res.json({ message: 'Login successful' });
-                } else {
-                    res.json({ message: 'Account Login Failed' });
-                }
-        })}})});
+                .then((response) => response.json())
+                .then((loginData) => {
+                    if (data.username === loginData.user && data.password === loginData.password) {
+                        res.json({ message: 'Login successful' });
+                    } else {
+                        res.json({ message: 'Account Login Failed' });
+                    }
+                })
+        }
+    })
+});
 
 
 
@@ -161,18 +192,18 @@ app.get("/api/modifyAccount", (req, res) => {
 app.post('/api/modifyAccount', (req, res) => {
     const formData = req.body;
 
-  accountSchema.validate(formData)
-    .then((valid) => {
-      if (valid) {
-        userData = { ...userData, ...valid };
-        res.json({ message: 'User account updated successfully', formData: valid });
-      } else {
-        res.status(400).json({ errors: ["Invalid Input"] });
-      }
-    })
-    .catch((err) => {
-      res.status(400).json({ errors: err.errors });
-    });
+    accountSchema.validate(formData)
+        .then((valid) => {
+            if (valid) {
+                userData = { ...userData, ...valid };
+                res.json({ message: 'User account updated successfully', formData: valid });
+            } else {
+                res.status(400).json({ errors: ["Invalid Input"] });
+            }
+        })
+        .catch((err) => {
+            res.status(400).json({ errors: err.errors });
+        });
 
     /*userData.fullName = req.body.fullName;
     userData.firstAddress = req.body.firstAddress;
