@@ -13,8 +13,8 @@ CREATE TABLE client_information(
 );
 CREATE TABLE user_info(
     id integer PRIMARY KEY AUTO_INCREMENT,
-    user_name VARCHAR(25),
-    user_password VARCHAR(100)
+    user_name VARCHAR(25) UNIQUE NOT NULL,
+    user_password VARCHAR(100) NOT NULL
 );
 INSERT INTO client_information(fullName, address1, address2, city, us_state, zipcode)
 VALUES ("Eric Cartman", "123 Test St", "Apt 34", "South Park", "CO", "84235"),
