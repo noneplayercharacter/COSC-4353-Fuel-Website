@@ -3,7 +3,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors'); //Cors middleware
 const Yup = require('yup'); //Yup validation middleware
-let getClientInfo, createClient, getFuelQuoteHistory, getQuote, saveQuote;
+let getClientInfo, createClient, getFuelQuoteHistory, getQuote, saveQuote, updateClient;
 try {
     const databaseFunction = require('./database.js');
     getClientInfo = databaseFunction.getClientInfo;
@@ -11,6 +11,7 @@ try {
     getFuelQuoteHistory = databaseFunction.getFuelQuoteHistory;
     getQuote = databaseFunction.getQuote;
     saveQuote = databaseFunction.saveQuote;
+    updateClient = databaseFunction.updateClient;
 }
 catch {
     console.error("Error importing functions from database.js");
@@ -217,30 +218,30 @@ app.post('/api/validateLogin', (req, res) => {
 app.get("/api/modifyAccount", (req, res) => {
     res.json(userData);
 });
-app.post('/api/modifyAccount', (req, res) => {
+app.post('/api/modifyAccount', async (req, res) => {
     const formData = req.body;
+    try {
+        // Validate the formData
+        const validationResult = await accountSchema.validate(formData);
 
-    accountSchema.validate(formData)
-        .then((valid) => {
-            if (valid) {
-                userData = { ...userData, ...valid };
-                res.json({ message: 'User account updated successfully', formData: valid });
+        if (validationResult) {
+            // Assuming client ID is in the request body as 'clientId'
+            //const clientId = req.body.clientId;
+            const clientId = 1;
+
+            if (clientId) {
+                const result = await updateClient(clientId, formData.fullName, formData.address1, formData.address2, formData.city, formData.state, formData.zipcode);
+                res.json({ message: 'User account updated successfully', formData: validationResult });
             } else {
-                res.status(400).json({ errors: ["Invalid Input"] });
+                res.status(400).json({ errors: ["Invalid Input: Missing clientId"] });
             }
-        })
-        .catch((err) => {
-            res.status(400).json({ errors: err.errors });
-        });
-
-    /*userData.fullName = req.body.fullName;
-    userData.firstAddress = req.body.firstAddress;
-    userData.secondAddress = req.body.secondAddress;
-    userData.city = req.body.city;
-    userData.state = req.body.state;
-    userData.zipcode = req.body.zipcode;
-
-    res.json({ message: 'User account updated successfully' });*/
+        } else {
+            res.status(400).json({ errors: ["Invalid Input"] });
+        }
+    } catch (error) {
+        console.error("Error updating client:", error);
+        res.status(500).json({ message: 'Update failed', error: error.message });
+    }
 });
 
 

@@ -48,6 +48,24 @@ async function saveQuote(id, gallons_requested, delivery_date, date_created, sug
     }
 }
 
+async function updateClient(id, fullName, address1, address2, city, us_state, zipcode) {
+    const [result] = await pool.query(
+        `UPDATE client_information 
+         SET fullName = ?, address1 = ?, address2 = ?, city = ?, us_state = ?, zipcode = ?
+         WHERE id = ?`, [fullName, address1, address2, city, us_state, zipcode, id]
+    );
+    
+    if (result.affectedRows > 0) {
+        return {
+            id,
+            fullName,
+            address1
+        };
+    } else {
+        throw new Error("Record not found"); // Handle the case when no record was updated
+    }
+}
+
 // Perform the createClient operation
 /*(async () => {
     try {
@@ -64,4 +82,5 @@ module.exports = {
     getFuelQuoteHistory,
     getQuote,
     saveQuote,
+    updateClient
 };
