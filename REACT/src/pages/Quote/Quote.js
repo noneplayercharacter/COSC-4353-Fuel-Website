@@ -23,7 +23,10 @@ function Quote(){
         const newGallons = parseFloat(event.target.value);
         setData({ ...info, gallons: newGallons });
     };
-    
+    const handleDateChange = (event) => {
+        const newDate = event.target.value;
+        setData({ ...info, date: newDate });
+    };
     //react-query hook allows fetch and load of data from server
     const { isLoading, data, error, refetch }= useQuery(["data"], fetchData);
     
@@ -33,6 +36,7 @@ function Quote(){
     //Submit function to send data to server
     const handleSubmit = () => {
         data.gallons = info.gallons;
+        data.date = info.date;
         
         // Send the data to the server using axios.post
         axios.post("http://localhost:5000/api/validateQuote", data)
@@ -85,6 +89,8 @@ function Quote(){
                     name="deliveryDate"
                     required
                     min={new Date().toISOString().split('T')[0]}
+                    value={info.date}
+                    onChange={handleDateChange}
                 />
                 <label htmlFor="suggestedPrice">Suggested Price per Gallon:</label>
                 <input

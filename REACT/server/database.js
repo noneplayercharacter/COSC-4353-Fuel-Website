@@ -26,15 +26,26 @@ async function createClient(user_name, user_password) {
 
 async function getFuelQuoteHistory(id) {
     const [rows] = await pool.query("SELECT * from fuel_quote_history WHERE id = ?", [id]);
-    const [client_data] = await pool.query("SELECT * from client_information WHERE id = ?", [id]);
-    
-    return [rows, client_data];
+    return rows;
 }
 
 async function getQuote(id) {
     const [client_data] = await pool.query("SELECT * from client_information WHERE id = ?", [id]);
-    
     return client_data;
+}
+
+async function saveQuote(id, gallons_requested, delivery_date, date_created, suggested_price, total) {
+    try {
+        const sql = `
+            INSERT INTO fuel_quote_history (id, gallons_requested, delivery_date, date_created, suggested_price, total)
+            VALUES (?, ?, ?, ?, ?, ?)`;
+        await pool.query(sql, [id, gallons_requested, delivery_date, date_created, suggested_price, total]);
+        
+        return 'Quote saved successfully';
+    
+    } catch (error) {
+        console.error('Error saving quote:', error);
+    }
 }
 
 // Perform the createClient operation
@@ -52,4 +63,5 @@ module.exports = {
     createClient,
     getFuelQuoteHistory,
     getQuote,
+    saveQuote,
 };

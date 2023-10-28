@@ -3,13 +3,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors'); //Cors middleware
 const Yup = require('yup'); //Yup validation middleware
-let getClientInfo, createClient, getFuelQuoteHistory, getQuote;
+let getClientInfo, createClient, getFuelQuoteHistory, getQuote, saveQuote;
 try {
     const databaseFunction = require('./database.js');
     getClientInfo = databaseFunction.getClientInfo;
     createClient = databaseFunction.createClient;
     getFuelQuoteHistory = databaseFunction.getFuelQuoteHistory;
     getQuote = databaseFunction.getQuote;
+    saveQuote = databaseFunction.saveQuote;
 }
 catch {
     console.error("Error importing functions from database.js");
@@ -56,7 +57,7 @@ app.get("/api/Quote", async (req, res) => {
         res.json({
             gallons: 0, //default value
             address: data[0].address1 + " " + data[0].address2, //client's address
-            date: "2022-01-01",
+            date: "",
             price: 2.5, //this needs to change to price from the pricing module
             total: 0   //default value
         });
@@ -80,14 +81,21 @@ const quoteSchema = Yup.object({
 });
 
 //Quote Validation
-app.post('/api/validateQuote', (req, res) => {
+app.post('/api/validateQuote', async (req, res) => {
+    const id = 1;
     const formData = req.body;
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().split('T')[0];
+
     quoteSchema.validate(formData).catch(err => {
         res.status(400).json({ errors: [err.errors] });
     }).then(valid => {
         if (valid) {
             formData.total = formData.gallons * formData.price;
             res.json({ formData })
+
+            // Saves data to database
+            saveQuote(id, formData.gallons, formData.date, formattedDate, formData.price, formData.total)
         }
     })
 });
@@ -98,15 +106,16 @@ app.get("/api/QuoteHistory", async (req, res) => {
     try{
         const id = 1;
         const data = await getFuelQuoteHistory(id);
-        res.json({
-            gallons: data[0][0].gallons_requested,
-            address: data[1][0].address1 + " " + data[1][0].address2,
-            date: data[0][0].delivery_date.toString().slice(4, 15),
-            created: data[0][0].date_created.toString().slice(4, 15),
-            price: data[0][0].suggested_price,
-            total: data[0][0].total
-        });
+        const data2 = await getQuote(id);
+        const address = data2[0].address1 + " " + data2[0].address2;
 
+        for (let i = 0; i < data.length; i++) {
+            data[i].date_created = data[i].date_created.toString().slice(4, 15);
+            data[i].delivery_date = data[i].delivery_date.toString().slice(4, 15);
+        }
+
+        res.json({data, address})
+        
     } catch(error) {
         res.status(500).json({ error: "An error occurred while fetching data" });
     }

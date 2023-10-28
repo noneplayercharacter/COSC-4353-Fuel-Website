@@ -11,15 +11,6 @@ const fetchData = () => {
 }
 
 function QuoteHistory(){
-    //Default values for data
-    const info = {
-        date: "No data available",
-        address: "No data available",
-        gallons: "No data available",
-        price: "No data available",
-        total: "No data available",
-      };
-    
       const { isLoading, data, error, refetch }= useQuery(["data"], fetchData);
       
       if (isLoading) return "Loading...";
@@ -41,14 +32,31 @@ function QuoteHistory(){
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                        <td>{data ? data.date: info.date}</td>
-                        <td>{data ? data.created: info.created}</td>
-                        <td>{data ? data.address: info.address}</td>
-                        <td>{data ? data.gallons: info.gallons}</td>
-                        <td>{data ? data.price: info.price}</td>
-                        <td>{data ? data.total: info.price}</td>
-                        </tr>
+                    {data && data.data && data.data.length === 0 ?(
+                    <tr>
+                    <td colSpan="6">No data available</td>
+                    </tr>
+                    ) : (
+                    (() => {
+                        const rows = [];
+                        if (data && data.data) {
+                        for (let i = 0; i < data.data.length; i++) {
+                          const item = data.data[i];
+                          rows.push(
+                            <tr key={i}>
+                                <td>{item.delivery_date}</td>
+                                <td>{item.date_created}</td>
+                                <td>{data.address}</td>
+                                <td>{item.gallons_requested}</td>
+                                <td>{item.suggested_price}</td>
+                                <td>{item.total}</td>
+                            </tr>
+                            );
+                        }
+                    }
+                        return rows;
+                      })()
+                    )}
                     </tbody>
                     </table>
             </div>
