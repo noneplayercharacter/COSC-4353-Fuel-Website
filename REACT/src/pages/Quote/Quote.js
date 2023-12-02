@@ -14,7 +14,9 @@ function Quote(){
     const [info, setData] = useState({
         gallons: 0,
         address: "",
-        date: ""
+        date: "",
+        inTexas: false,
+        price: 1.5,
       });
 
     const [validationError, setValidationError] = useState(null);
@@ -27,6 +29,14 @@ function Quote(){
         const newDate = event.target.value;
         setData({ ...info, date: newDate });
     };
+    const handleCheckboxChange = (event) => {
+        const newLocation = event.target.checked;
+        setData({ ...info, inTexas: newLocation });
+    };
+    const handlePriceChange = (event) => {
+        const newPrice = event.target.value;
+        setData({ ...info, price: newPrice });
+    };
     //react-query hook allows fetch and load of data from server
     const { isLoading, data, error, refetch }= useQuery(["data"], fetchData);
     
@@ -37,12 +47,14 @@ function Quote(){
     const handleSubmit = () => {
         data.gallons = info.gallons;
         data.date = info.date;
+        data.inTexas = info.inTexas;
         
         // Send the data to the server using axios.post
         axios.post("http://localhost:5000/api/validateQuote", data)
           .then((response) => {
             // Sets info.total to new amount to display.
-            setData({ ...info, total: response.data.formData.total });
+            setData({ ...info, total: response.data.formData.total,
+                                price: response.data.formData.price});
             setValidationError(null)
           })
           .catch((error) => {
@@ -82,6 +94,14 @@ function Quote(){
                     value={data.address}
                     readOnly
                 />
+                <label htmlFor="inTexas"> In Texas: </label>
+                <input
+                    type="checkbox"
+                    id="inTexas"
+                    name="inTexas"
+                    checked={info.inTexas}
+                    onChange={handleCheckboxChange}
+                />
                 <label htmlFor="deliveryDate">Delivery Date:</label>
                 <input
                     type="date"
@@ -97,8 +117,8 @@ function Quote(){
                     type="number"
                     id="suggestedPrice"
                     name="suggestedPrice"
-                    value={data.price}
-                    readOnly
+                    value={info.price}
+                    onChange={handlePriceChange}
                 />
                 <label htmlFor="totalAmountDue">Total Amount Due:</label>
                 <input

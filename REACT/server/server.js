@@ -59,7 +59,7 @@ app.get("/api/Quote", async (req, res) => {
             gallons: 0, //default value
             address: data[0].address1 + " " + data[0].address2, //client's address
             date: "",
-            price: 2.5, //this needs to change to price from the pricing module
+            price: 0, //this needs to change to price from the pricing module
             total: 0   //default value
         });
 
@@ -87,11 +87,27 @@ app.post('/api/validateQuote', async (req, res) => {
     const formData = req.body;
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split('T')[0];
-
+    const history = await getFuelQuoteHistory(id);
     quoteSchema.validate(formData).catch(err => {
         res.status(400).json({ errors: [err.errors] });
     }).then(valid => {
         if (valid) {
+            
+            let location_val = 0.04; // Out of State Value
+            let history_val = 0.01; // No History Value
+            let gal_factor = 0.02;  // Gallons Requested Factor less than 1000
+            console.log(formData.inTexas)
+            if (formData.inTexas === true) {
+                location_val = 0.02;
+            }
+            if (history.length > 0){
+                history_val = 0;
+            }
+            if (formData.gallons > 1000) {
+                gal_factor = 0.03;
+            }
+            let margin = (location_val - history_val + gal_factor + .1) * 1.5;
+            formData.price = 1.5 + margin;
             formData.total = formData.gallons * formData.price;
             res.json({ formData })
 
