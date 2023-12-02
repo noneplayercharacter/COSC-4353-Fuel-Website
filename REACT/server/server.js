@@ -96,7 +96,7 @@ app.post('/api/validateQuote', async (req, res) => {
             let location_val = 0.04; // Out of State Value
             let history_val = 0.01; // No History Value
             let gal_factor = 0.02;  // Gallons Requested Factor less than 1000
-            console.log(formData.inTexas)
+            
             if (formData.inTexas === true) {
                 location_val = 0.02;
             }
@@ -112,7 +112,9 @@ app.post('/api/validateQuote', async (req, res) => {
             res.json({ formData })
 
             // Saves data to database
-            saveQuote(id, formData.gallons, formData.date, formattedDate, formData.price, formData.total)
+            if (formData.flag === true) {
+                saveQuote(id, formData.gallons, formData.date, formattedDate, formData.price, formData.total)
+            }
         }
     })
 });

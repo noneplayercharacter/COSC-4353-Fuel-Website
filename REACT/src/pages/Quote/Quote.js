@@ -44,15 +44,21 @@ function Quote(){
     if (error) return "An error has occurred: " + error.message;
 
     //Submit function to send data to server
-    const handleSubmit = () => {
+    const handleSubmit = (action) => {
+        let flag = false;
+        if (action === 'submitQuote') {
+                flag = true;
+        }
+
         data.gallons = info.gallons;
         data.date = info.date;
         data.inTexas = info.inTexas;
+        data.flag = flag;
         
         // Send the data to the server using axios.post
         axios.post("http://localhost:5000/api/validateQuote", data)
           .then((response) => {
-            // Sets info.total to new amount to display.
+            // Sets info.total and info.price to new amount to display.
             setData({ ...info, total: response.data.formData.total,
                                 price: response.data.formData.price});
             setValidationError(null)
@@ -67,7 +73,6 @@ function Quote(){
               }
           });
       };
-
 
     return(
         <div>
@@ -128,7 +133,8 @@ function Quote(){
                     value={info.total}
                     readOnly
                 />
-                <button type="button" onClick={handleSubmit}>Generate Quote</button>
+                <button type="button" onClick={() => handleSubmit('getQuote')}>Get Quote</button>
+                <button type="button" onClick={() => handleSubmit('submitQuote')}>Submit Quote</button>
                 </form>
             </div>
         </div>
