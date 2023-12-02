@@ -124,6 +124,7 @@ function Quote(){
                     name="suggestedPrice"
                     value={info.price}
                     onChange={handlePriceChange}
+                    readOnly
                 />
                 <label htmlFor="totalAmountDue">Total Amount Due:</label>
                 <input
